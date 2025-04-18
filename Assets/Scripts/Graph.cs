@@ -46,9 +46,8 @@ public class Graph : MonoBehaviour {
     private List<Node> getNeighbors(int x, int y, Node[,] nodeArray) {
         List<Node> neighborNodes = new List<Node>();
         foreach (Vector2 d in allDirections) {
-            int newX = (x + (int)d.x + mapWidth) % mapWidth; // new x for the direction we are looking in
-            int newY = (y + (int)d.y + mapHeight) % mapHeight; // new y for the direction we are looking in
-
+            int newX = x + (int)d.x; // new x for the direction we are looking in
+            int newY = y + (int)d.y; // new y for the direction we are looking in
 
             if (isInRange(newX, newY) &&
                 nodeArray[newX, newY] != null &&

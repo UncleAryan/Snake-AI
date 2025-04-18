@@ -15,11 +15,19 @@ public class Node {
     public int yIndex;
     public Vector3 position;
     public List<Node> neighbors;
+    public int f, g, h; // for A*
+    public int distance;
+    public Node previous;
 
     public Node(int x, int y, NodeState state) {
         xIndex = x; 
         yIndex = y;
         nodeState = state;
         neighbors = new List<Node>();
+        previous = null;
+    }
+
+    public void reset() {
+        previous = null;
     }
 }

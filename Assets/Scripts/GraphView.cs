@@ -9,7 +9,10 @@ public class GraphView : MonoBehaviour {
     public Color foodColor = Color.red;
     public NodeView[,] nodeViews;
 
+    private Graph graph;
+
     public void init(Graph graph) {
+        this.graph = graph; 
         nodeViews = new NodeView[graph.mapWidth, graph.mapHeight];
 
         // go through each node in the nodes array in Graph class
@@ -33,10 +36,22 @@ public class GraphView : MonoBehaviour {
         }
     }
 
-    public void colorNode(Node node, Color color) {
-        NodeView nodeView = nodeViews[node.xIndex, node.yIndex];
-        if (nodeView != null) {
-            nodeView.colorNode(color);
+    public void updateDistanceDisplay() {
+        for (int y = 0; y < nodeViews.GetLength(0); y++) {
+            for(int x = 0; x < nodeViews.GetLength(1); x++) {
+                nodeViews[y, x].updateDistance(graph.nodes[y, x]);
+            }
+        }
+    }
+
+    public void colorNodes(List<Node> nodes, Color color) {
+        foreach (Node node in nodes) {
+            if (node != null) {
+                NodeView nodeView = nodeViews[node.xIndex, node.yIndex];
+                if (nodeView != null) {
+                    nodeView.colorNode(color);
+                }
+            }
         }
     }
 }
