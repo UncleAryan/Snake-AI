@@ -213,6 +213,7 @@ MonoBehaviour:
   heuristics: {fileID: 3707553}
   headColor: {r: 0.21962348, g: 0.7509433, b: 0.083595514, a: 0}
   foodColor: {r: 1, g: 0, b: 0, a: 0}
+  bodyColor: {r: 0.12206562, g: 0.4528302, b: 0.03631186, a: 0}
   openColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &172158498
 GameObject:

@@ -96,12 +96,22 @@ public class AStarSearch : MonoBehaviour {
     }
 
     public IEnumerator searchRoutine(float timeStep = 0.1f) {
+        bool pathFound = false;
+
         while (!isComplete) {
             if (frontierNodes.Count > 0) {
                 iterations++;
 
                 Node currentNode = getLowestNode(frontierNodes); // lowest f cost node
                 frontierNodes.Remove(currentNode);
+
+                if (currentNode == goalNode) {
+                    pathNodes = getPathNodes(goalNode);
+                    StartCoroutine(snake.moveHeadToFood(pathNodes, timeStep));
+                    isComplete = true;
+                    yield break; 
+                }
+
                 exploredNodes.Add(currentNode);
 
                 expandFrontier(currentNode);
@@ -110,14 +120,22 @@ public class AStarSearch : MonoBehaviour {
                     pathNodes = getPathNodes(goalNode);
                     StartCoroutine(snake.moveHeadToFood(pathNodes, timeStep));
                     isComplete = true;
+                    pathFound = true;
                 }
+
+
                 yield return new WaitForSeconds(timeStep);
             } else {
                 isComplete = true;
+                pathFound = false;
             }
             showColors();
         }
         
+        if(!pathFound) {
+            Debug.Log("Im stuck bruh");
+            StartCoroutine(snake.createSpace(timeStep));
+        }
     }
 
     private void expandFrontier(Node node) {
