@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 
 public class Graph : MonoBehaviour {
     public Node[,] nodes;
 
-    int[,] mapData;
     public int mapWidth = -1;
     public int mapHeight = -1;
 
@@ -18,7 +16,6 @@ public class Graph : MonoBehaviour {
     };
 
     public void init(int[,] mapData) {
-        this.mapData = mapData;
         mapWidth = mapData.GetLength(0);
         mapHeight = mapData.GetLength(1);
         nodes = new Node[mapWidth, mapHeight];
