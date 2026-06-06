@@ -1,8 +1,7 @@
 using TMPro;
 using UnityEngine;
-using static TreeEditor.TreeEditorHelper;
 
-public class NodeView: MonoBehaviour {
+public class NodeView : MonoBehaviour {
     public GameObject tile;
     [Range(0, 0.5f)]
     public float borderSize = 0.15f;
@@ -19,18 +18,15 @@ public class NodeView: MonoBehaviour {
         displayDistance(node);
     }
 
-    private void colorNode(Color color, GameObject gameObject) {
-        if (gameObject != null) {
-            Renderer gameObjectRenderer = gameObject.GetComponent<Renderer>();
-            gameObjectRenderer.material.color = color;
+    public void colorNode(Color color) {
+        if (tile != null) {
+            Renderer tileRenderer = tile.GetComponent<Renderer>();
+            tileRenderer.material.color = color;
         }
     }
 
-    public void colorNode(Color color) {
-        colorNode(color, tile);
-    }
-
     public void updateDistance(Node node) {
+        if (textMeshPro == null) return;
         if (node.nodeState == NodeState.OPEN && (Heuristics.StaticHeuristics.manhattanStaticBool || Heuristics.StaticHeuristics.euclideanStaticBool)) {
             textMeshPro.text = node.distance.ToString();
         }
@@ -44,7 +40,6 @@ public class NodeView: MonoBehaviour {
             textMeshPro.alignment = TextAlignmentOptions.Center;
             textMeshPro.fontSize = 8;
             textMeshPro.color = Color.black;
-
             textMeshPro.transform.localPosition = new Vector3(0, 0.1f, 0);
             textMeshPro.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
             textMeshPro.text = node.distance.ToString();

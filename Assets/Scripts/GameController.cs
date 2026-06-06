@@ -18,10 +18,8 @@ public class GameController : MonoBehaviour {
             int[,] mapInstance = mapData.makeMap();
             graph.init(mapInstance);
 
-            startX = 0;
-            startY = 0;
-            goalX = Random.Range(1, graph.mapWidth); //  avoid the first row so it does not interfere with the startNode
-            goalY = Random.Range(1, graph.mapHeight); //  avoid the first col so it does not interfere with the startNode
+            goalX = Random.Range(1, graph.mapWidth); // avoid column 0 so it does not overlap the start node
+            goalY = Random.Range(1, graph.mapHeight); // avoid row 0 so it does not overlap the start node
 
             Node startNode = graph.nodes[startX, startY];
             Node goalNode = graph.nodes[goalX, goalY];

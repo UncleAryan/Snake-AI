@@ -37,9 +37,9 @@ public class GraphView : MonoBehaviour {
     }
 
     public void updateDistanceDisplay() {
-        for (int y = 0; y < nodeViews.GetLength(0); y++) {
-            for(int x = 0; x < nodeViews.GetLength(1); x++) {
-                nodeViews[y, x].updateDistance(graph.nodes[y, x]);
+        for (int x = 0; x < nodeViews.GetLength(0); x++) {
+            for (int y = 0; y < nodeViews.GetLength(1); y++) {
+                nodeViews[x, y].updateDistance(graph.nodes[x, y]);
             }
         }
     }

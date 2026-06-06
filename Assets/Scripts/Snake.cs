@@ -1,8 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using NUnit.Framework;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Snake : MonoBehaviour {
@@ -61,8 +58,6 @@ public class Snake : MonoBehaviour {
 
         if (head == food) {
             if (body.Count > 0) {
-                Vector2Int moveDirection = new Vector2Int(oldHeadPosition.xIndex - head.xIndex,
-                                                      oldHeadPosition.yIndex - head.yIndex);
                 body.Add(body[body.Count - 1]);
                 body[body.Count - 1].nodeState = NodeState.BODY;
             } else {
