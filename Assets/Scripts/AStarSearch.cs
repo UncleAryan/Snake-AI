@@ -1,12 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using static TreeEditor.TreeEditorHelper;
 
 public class AStarSearch : MonoBehaviour {
     public Snake snake;
@@ -25,7 +19,6 @@ public class AStarSearch : MonoBehaviour {
     public Color pathColor = Color.cyan;
     public bool isComplete;
     public int iterations;
-    public bool foodFound;
 
     public void init(Graph graph, GraphView graphView, Node start, Node goal) {
         if (start == null || goal == null || graph == null || graphView == null) {
@@ -39,8 +32,6 @@ public class AStarSearch : MonoBehaviour {
         this.graph = graph;
         this.graphView = graphView;
         startNode = start;
-        startNode.f = 0;
-        startNode.g = 0;
         goalNode = goal;
 
         exploredNodes = new List<Node>();
@@ -61,10 +52,10 @@ public class AStarSearch : MonoBehaviour {
         startNode.f = startNode.g + startNode.h;
         frontierNodes.Add(startNode);
 
-        showColors();
-
         isComplete = false;
         iterations = 0;
+
+        showColors();
     }
 
     public void reset(Node startNode, Node goalNode) {
@@ -89,53 +80,38 @@ public class AStarSearch : MonoBehaviour {
         startNode.f = startNode.g + startNode.h;
         frontierNodes.Add(startNode);
 
-        showColors();
-
         isComplete = false;
         iterations = 0;
+
+        showColors();
     }
 
     public IEnumerator searchRoutine(float timeStep = 0.1f) {
-        bool pathFound = false;
-
         while (!isComplete) {
             if (frontierNodes.Count > 0) {
                 iterations++;
 
-                Node currentNode = getLowestNode(frontierNodes); // lowest f cost node
+                Node currentNode = getLowestNode(frontierNodes);
                 frontierNodes.Remove(currentNode);
 
                 if (currentNode == goalNode) {
                     pathNodes = getPathNodes(goalNode);
                     StartCoroutine(snake.moveHeadToFood(pathNodes, timeStep));
-                    isComplete = true;
-                    yield break; 
+                    yield break;
                 }
 
                 exploredNodes.Add(currentNode);
-
                 expandFrontier(currentNode);
-
-                if (frontierNodes.Contains(goalNode)) {
-                    pathNodes = getPathNodes(goalNode);
-                    StartCoroutine(snake.moveHeadToFood(pathNodes, timeStep));
-                    isComplete = true;
-                    pathFound = true;
-                }
-
+                showColors();
 
                 yield return new WaitForSeconds(timeStep);
             } else {
                 isComplete = true;
-                pathFound = false;
             }
-            showColors();
         }
-        
-        if(!pathFound) {
-            Debug.Log("Im stuck bruh");
-            StartCoroutine(snake.createSpace(timeStep));
-        }
+
+        Debug.Log("No path to food found.");
+        StartCoroutine(snake.createSpace(timeStep));
     }
 
     private void expandFrontier(Node node) {
@@ -143,13 +119,12 @@ public class AStarSearch : MonoBehaviour {
             if (!exploredNodes.Contains(neighbor)) {
                 int tentativeGCost = node.g + 1;
                 if (tentativeGCost < neighbor.g) {
+                    neighbor.previous = node;
                     neighbor.g = tentativeGCost;
                     neighbor.h = neighbor.distance;
                     neighbor.f = neighbor.g + neighbor.h;
 
-                    if (!exploredNodes.Contains(neighbor) &&
-                        !frontierNodes.Contains(neighbor)) {
-                        neighbor.previous = node;
+                    if (!frontierNodes.Contains(neighbor)) {
                         frontierNodes.Add(neighbor);
                     }
                 }
@@ -159,61 +134,38 @@ public class AStarSearch : MonoBehaviour {
 
     private Node getLowestNode(List<Node> nodes) {
         Node lowest = nodes[0];
-
-        for (int i = 0; i < nodes.Count; i++) {
+        for (int i = 1; i < nodes.Count; i++) {
             if (nodes[i].f < lowest.f || (nodes[i].f == lowest.f && nodes[i].h < lowest.h)) {
                 lowest = nodes[i];
             }
         }
-
         return lowest;
     }
 
-    List<Node> getPathNodes(Node goalNode) {
+    private List<Node> getPathNodes(Node goalNode) {
         List<Node> path = new List<Node>();
-
         if (goalNode == null) {
             return path;
         }
-
         path.Add(goalNode);
         Node currentNode = goalNode.previous;
         while (currentNode != null) {
             path.Insert(0, currentNode);
             currentNode = currentNode.previous;
         }
-
         return path;
     }
 
-    private void showColors(GraphView graphView, Node start, Node goal) {
-        NodeView startNodeView = graphView.nodeViews[start.xIndex, start.yIndex];
-        NodeView goalNodeView = graphView.nodeViews[goal.xIndex, goal.yIndex];
-
-
-        if (frontierNodes != null) {
-            graphView.colorNodes(frontierNodes, frontierColor);
-        }
-
-        if (exploredNodes != null) {
-            graphView.colorNodes(exploredNodes, exploredColor);
-        }
-
-        if (pathNodes != null) {
-            graphView.colorNodes(pathNodes, pathColor);
-        }
-
-        if (startNodeView != null) {
-            startNodeView.colorNode(startColor);
-        }
-
-        if (goalNodeView != null) {
-            goalNodeView.colorNode(goalColor);
-        }
-    }
-
     public void showColors() {
-        showColors(graphView, startNode, goalNode);
-    }
+        if (graphView == null || startNode == null || goalNode == null) return;
 
+        NodeView startNodeView = graphView.nodeViews[startNode.xIndex, startNode.yIndex];
+        NodeView goalNodeView = graphView.nodeViews[goalNode.xIndex, goalNode.yIndex];
+
+        if (frontierNodes != null) graphView.colorNodes(frontierNodes, frontierColor);
+        if (exploredNodes != null) graphView.colorNodes(exploredNodes, exploredColor);
+        if (pathNodes != null) graphView.colorNodes(pathNodes, pathColor);
+        if (startNodeView != null) startNodeView.colorNode(startColor);
+        if (goalNodeView != null) goalNodeView.colorNode(goalColor);
+    }
 }
