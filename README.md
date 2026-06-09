@@ -4,6 +4,12 @@ A Snake game simulation built in Unity where the snake navigates autonomously us
 
 ---
 
+## Live Demo: https://unclearyan.github.io/Snake-AI/
+- It is pre-configured to be a 10x10 using Manhattan heuristics.
+- Clone the repo and run locally for more control over colors, grid size, and heuristics.
+
+---
+
 ## Requirements
 
 - Unity 6000.4.10f1 (Unity 6)
